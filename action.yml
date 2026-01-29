@@ -1,0 +1,142 @@
+name: "SCP Command to Transfer Files"
+description: "Easily transfer files and folders using the SCP command in Linux."
+author: "step-security"
+inputs:
+  host:
+    description: "Remote host address for SCP (e.g., example.com or 192.168.1.1)."
+  port:
+    description: "Remote SSH port for SCP. Default: 22."
+    default: "22"
+  username:
+    description: "Username for SSH authentication."
+  password:
+    description: "Password for SSH authentication (not recommended; use SSH keys if possible)."
+  protocol:
+    description: "IP protocol to use. Valid values: 'tcp', 'tcp4', or 'tcp6'. Default: tcp."
+    default: "tcp"
+  timeout:
+    description: "Timeout for establishing SSH connection to the remote host. Default: 30s."
+    default: "30s"
+  command_timeout:
+    description: "Timeout for the SCP command execution. Default: 10m."
+    default: "10m"
+  key:
+    description: "Content of the SSH private key (e.g., the raw content of ~/.ssh/id_rsa)."
+  key_path:
+    description: "Path to the SSH private key file."
+  passphrase:
+    description: "Passphrase for the SSH private key, if required."
+  fingerprint:
+    description: "SHA256 fingerprint of the host's public key. If not set, host key verification is skipped (not recommended for production)."
+  use_insecure_cipher:
+    description: "Enable additional, less secure ciphers for compatibility. Not recommended unless required."
+  target:
+    description: "Target directory path on the remote server. Must be a directory."
+  source:
+    description: "List of files or directories to transfer (local paths)."
+  rm:
+    description: "Remove the target directory on the server before uploading new data."
+  debug:
+    description: "Enable debug messages for troubleshooting."
+  strip_components:
+    description: "Remove the specified number of leading path elements when extracting files."
+  overwrite:
+    description: "Use the --overwrite flag with tar to overwrite existing files."
+  tar_dereference:
+    description: "Use the --dereference flag with tar to follow symlinks."
+  tar_tmp_path:
+    description: "Temporary path for the tar file on the destination host."
+  tar_exec:
+    description: "Path to the tar executable on the destination host. Default: tar."
+    default: "tar"
+  proxy_host:
+    description: "Remote host address for SSH proxy."
+  proxy_port:
+    description: "SSH proxy port. Default: 22."
+    default: "22"
+  proxy_username:
+    description: "Username for SSH proxy authentication."
+  proxy_password:
+    description: "Password for SSH proxy authentication."
+  proxy_passphrase:
+    description: "Passphrase for the SSH proxy private key, if required."
+  proxy_timeout:
+    description: "Timeout for establishing SSH connection to the proxy host. Default: 30s."
+    default: "30s"
+  proxy_key:
+    description: "Content of the SSH proxy private key (e.g., the raw content of ~/.ssh/id_rsa)."
+  proxy_key_path:
+    description: "Path to the SSH proxy private key file."
+  proxy_fingerprint:
+    description: "SHA256 fingerprint of the proxy host's public key. If not set, host key verification is skipped (not recommended for production)."
+  proxy_use_insecure_cipher:
+    description: "Enable additional, less secure ciphers for the proxy connection. Not recommended unless required."
+  curl_insecure:
+    description: "When true, uses the --insecure option with curl for insecure downloads."
+    default: "false"
+  capture_stdout:
+    description: "When true, captures and returns standard output from the commands as action output."
+    default: "false"
+  version:
+    description: |
+      The version of drone-scp to use.
+
+outputs:
+  stdout:
+    description: "Standard output of the executed commands when capture_stdout is enabled."
+    value: ${{ steps.entrypoint.outputs.stdout }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set GitHub Path
+      run: echo "$GITHUB_ACTION_PATH" >> $GITHUB_PATH
+      shell: bash
+      env:
+        GITHUB_ACTION_PATH: ${{ github.action_path }}
+    - id: entrypoint
+      name: Run entrypoint.sh
+      run: entrypoint.sh
+      shell: bash
+      env:
+        GITHUB_ACTION_PATH: ${{ github.action_path }}
+        INPUT_HOST: ${{ inputs.host }}
+        INPUT_PORT: ${{ inputs.port }}
+        INPUT_PROTOCOL: ${{ inputs.protocol }}
+        INPUT_USERNAME: ${{ inputs.username }}
+        INPUT_PASSWORD: ${{ inputs.password }}
+        INPUT_PASSPHRASE: ${{ inputs.passphrase }}
+        INPUT_KEY: ${{ inputs.key }}
+        INPUT_KEY_PATH: ${{ inputs.key_path }}
+        INPUT_FINGERPRINT: ${{ inputs.fingerprint }}
+        INPUT_PROXY_HOST: ${{ inputs.proxy_host }}
+        INPUT_PROXY_PORT: ${{ inputs.proxy_port }}
+        INPUT_PROXY_USERNAME: ${{ inputs.proxy_username }}
+        INPUT_PROXY_PASSWORD: ${{ inputs.proxy_password }}
+        INPUT_PROXY_PASSPHRASE: ${{ inputs.proxy_passphrase }}
+        INPUT_PROXY_KEY: ${{ inputs.proxy_key }}
+        INPUT_PROXY_KEY_PATH: ${{ inputs.proxy_key_path }}
+        INPUT_PROXY_FINGERPRINT: ${{ inputs.proxy_fingerprint }}
+        INPUT_USE_INSECURE_CIPHER: ${{ inputs.use_insecure_cipher }}
+        INPUT_CIPHER: ${{ inputs.cipher }}
+        INPUT_PROXY_USE_INSECURE_CIPHER: ${{ inputs.proxy_use_insecure_cipher }}
+        INPUT_PROXY_CIPHER: ${{ inputs.proxy_cipher }}
+        INPUT_DEBUG: ${{ inputs.debug }}
+        INPUT_TIMEOUT: ${{ inputs.timeout }}
+        INPUT_COMMAND_TIMEOUT: ${{ inputs.command_timeout }}
+        INPUT_TARGET: ${{ inputs.target }}
+        INPUT_SOURCE: ${{ inputs.source }}
+        INPUT_RM: ${{ inputs.rm }}
+        INPUT_STRIP_COMPONENTS: ${{ inputs.strip_components }}
+        INPUT_OVERWRITE: ${{ inputs.overwrite }}
+        INPUT_TAR_DEREFERENCE: ${{ inputs.tar_dereference }}
+        INPUT_TAR_TMP_PATH: ${{ inputs.tar_tmp_path }}
+        INPUT_TAR_EXEC: ${{ inputs.tar_exec }}
+        INPUT_PROXY_TIMEOUT: ${{ inputs.proxy_timeout }}
+        INPUT_CAPTURE_STDOUT: ${{ inputs.capture_stdout }}
+        INPUT_CURL_INSECURE: ${{ inputs.curl_insecure }}
+        DRONE_SCP_VERSION: ${{ inputs.version }}
+
+branding:
+  icon: "copy"
+  color: "gray-dark"
