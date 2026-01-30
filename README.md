@@ -2,8 +2,6 @@
 
 [GitHub Action](https://github.com/features/actions) for copying files and artifacts via SSH.
 
-[![lint and test](https://github.com/step-security/scp-action/actions/workflows/testing.yml/badge.svg)](https://github.com/step-security/scp-action/actions/workflows/testing.yml)
-
 > **Note:** Only supports **Linux** [docker](https://www.docker.com/) containers.
 
 ---
