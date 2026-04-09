@@ -1,3 +1,5 @@
+[![StepSecurity Maintained Action](https://raw.githubusercontent.com/step-security/maintained-actions-assets/main/assets/maintained-action-banner.png)](https://docs.stepsecurity.io/actions/stepsecurity-maintained-actions)
+
 # 🚀 SCP for GitHub Actions
 
 [GitHub Action](https://github.com/features/actions) for copying files and artifacts via SSH.
